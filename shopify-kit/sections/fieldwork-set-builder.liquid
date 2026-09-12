@@ -1,0 +1,66 @@
+{{ 'fieldwork-set-builder.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'fieldwork-set-builder.js' | asset_url }}" defer="defer"></script>
+<fieldwork-set-builder class="fw-builder" data-currency="{{ cart.currency.iso_code | default: shop.currency | escape }}" data-root="{{ routes.root_url }}">
+  <div class="fw-builder__intro">
+    <p class="fw-builder__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+    <h2>{{ section.settings.heading | escape }}</h2>
+    <p>{{ section.settings.description | escape }}</p>
+  </div>
+  <form class="fw-builder__form">
+    <div class="fw-builder__products">
+      {% for block in section.blocks %}
+        {% assign product = block.settings.product %}
+        {% if product != blank %}
+          {% assign current_variant = product.selected_or_first_available_variant %}
+          <fieldset class="fw-builder__product" {{ block.shopify_attributes }}>
+            <legend class="fw-sr-only">{{ product.title | escape }}</legend>
+            {% if product.featured_image %}
+              {{ product.featured_image | image_url: width: 900 | image_tag: loading: 'lazy', widths: '300,600,900', sizes: '(min-width: 760px) 33vw, 100vw', class: 'fw-builder__image' }}
+            {% endif %}
+            <label class="fw-builder__choose">
+              <input type="checkbox" data-include {% if block.settings.required or block.settings.selected %}checked{% endif %} {% if block.settings.required %}data-required="true"{% endif %} {% unless product.available %}disabled{% endunless %}>
+              <span>{{ product.title | escape }}{% if block.settings.required %} <small>(required)</small>{% endif %}</span>
+            </label>
+            <label class="fw-builder__variant-label">
+              <span>Variant</span>
+              <select data-variant {% unless product.available %}disabled{% endunless %}>
+                {% for variant in product.variants %}
+                  <option value="{{ variant.id }}" data-price="{{ variant.price }}" data-available="{{ variant.available }}" {% if variant.featured_image %}data-image="{{ variant.featured_image | image_url: width: 900 }}"{% endif %} {% if variant.id == current_variant.id %}selected{% endif %} {% unless variant.available %}disabled{% endunless %}>{{ variant.title | escape }} — {{ variant.price | money_with_currency }}{% unless variant.available %} — Sold out{% endunless %}</option>
+                {% endfor %}
+              </select>
+            </label>
+            <p class="fw-builder__availability">{% if product.available %}Choose this piece for your set.{% else %}Currently unavailable.{% endif %}</p>
+          </fieldset>
+        {% elsif request.design_mode %}
+          <p class="fw-builder__empty" {{ block.shopify_attributes }}>Choose a product in this block’s settings.</p>
+        {% endif %}
+      {% endfor %}
+    </div>
+    <div class="fw-builder__purchase">
+      <span>Selected total <strong data-total></strong></span>
+      <button type="submit" data-submit>Add selected set to cart</button>
+    </div>
+    <p data-status role="status" aria-live="polite"></p>
+    <a data-cart-link href="{{ routes.cart_url }}" hidden>Review your cart before trying again</a>
+    <noscript><p>Enable JavaScript to configure this set. You can also choose each product from its product page.</p></noscript>
+  </form>
+</fieldwork-set-builder>
+{% schema %}
+{
+  "name": "Fieldwork set builder",
+  "tag": "section",
+  "class": "fieldwork-section",
+  "max_blocks": 6,
+  "settings": [
+    {"type":"text","id":"eyebrow","label":"Small heading","default":"THE EVERYDAY COLLECTION"},
+    {"type":"text","id":"heading","label":"Heading","default":"A few good things, together."},
+    {"type":"textarea","id":"description","label":"Description","default":"Choose the pieces that earn their place in your everyday set."}
+  ],
+  "blocks": [{"type":"product","name":"Product","settings":[
+    {"type":"product","id":"product","label":"Product"},
+    {"type":"checkbox","id":"required","label":"Required in the set","default":false},
+    {"type":"checkbox","id":"selected","label":"Selected initially","default":false}
+  ]}],
+  "presets":[{"name":"Fieldwork set builder","blocks":[{"type":"product","settings":{"required":true}},{"type":"product","settings":{"selected":true}},{"type":"product"}]}]
+}
+{% endschema %}
