@@ -12,11 +12,11 @@ Original working software for four role-specific LinkedIn profiles.
 
 Node 22 or newer. `npm run dev` starts http://127.0.0.1:8771. No external packages are needed for local execution. `npm test` runs the logic and server-boundary checks. Netlify CLI deploys `public` and `netlify/functions` using netlify.toml.
 
-Production requires CART_SIGNING_KEY, a randomly generated secret of at least 32 characters, configured in Netlify Functions. Never place it in public files. The local server generates an ephemeral key; restarting it clears existing cart signatures.
+Production requires CART_SIGNING_KEY, a randomly generated secret of at least 32 characters, configured as a Netlify environment variable available to Functions. On plans without scope controls, use all scopes. Never place it in public files. The local server generates an ephemeral key; restarting it clears existing cart signatures.
 
 ## Shopify
 
-Set SHOPIFY_STORE_DOMAIN to the merchant's exact .myshopify.com domain. Tokenless Storefront API access is attempted when no token is supplied. If the merchant requires private Storefront access, configure SHOPIFY_STOREFRONT_TOKEN as a Functions secret. The server sends it only to the configured Shopify store. Never use an Admin API token here.
+Set SHOPIFY_STORE_DOMAIN to the merchant's exact .myshopify.com domain. Tokenless Storefront API access is attempted when no token is supplied. If the merchant requires private Storefront access, configure SHOPIFY_STOREFRONT_TOKEN as a Netlify environment variable available to Functions. The server sends it only to the configured Shopify store. Never use an Admin API token here.
 
 The adapter uses Storefront API 2026-07 products, cartCreate, cartLinesAdd, cartLinesUpdate, cartLinesRemove and checkoutUrl. Before enabling a merchant store, verify the intended catalogue, market/currency, product route, invalid/sold-out variant, quantity update, cart expiry, checkout handoff and response-loss behaviour against that store. The independent catalogue does not take orders or payments. Live Shopify integration remains unverified until a merchant store is connected.
 
@@ -36,3 +36,7 @@ Black and tan images: Wiser by the Mile, https://unsplash.com/@wiserbythemile
 Licence: https://unsplash.com/license
 
 Images are credited reference photography. The depicted makers are not clients or partners. The practice order file contains fictional IDs and amounts, not client results. No generative image or model service is used by these applications.
+
+## Browser verification
+
+The optional browser checks use Playwright. Install it in your development environment, or set PLAYWRIGHT_PATH to your existing installation. Set CHROMIUM_PATH only when using an existing Chromium binary. TEST_BASE_URL selects the site under test; it defaults to the local server. Run `node tests/browser.cjs`. The checks use their own browser session and do not submit orders or payments.
