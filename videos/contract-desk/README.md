@@ -1,0 +1,1 @@
+Render with Hyperframes 0.8.36: `hyperframes check composition`, then `hyperframes render composition --quality high --output brag.mp4`. The recorded UI footage is included; no account or voice provider is required. Published MP4 and poster are in `../../workbench/public/videos/`.

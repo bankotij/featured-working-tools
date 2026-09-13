@@ -1,0 +1,1 @@
+An API response can look familiar and still break a client. JSON Contract Desk spots the mismatch and exports TypeScript from the contract. Try it at https://bankoti-workbench.netlify.app/jay/.

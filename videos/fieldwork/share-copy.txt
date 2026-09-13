@@ -1,0 +1,1 @@
+FIELDWORK is an example of our Shopify storefront work: colour selection, a carry-set builder and a server-validated bag. Try the flow at https://bankoti-workbench.netlify.app/fieldwork/.
