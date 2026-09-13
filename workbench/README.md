@@ -40,3 +40,7 @@ Images are credited reference photography. The depicted makers are not clients o
 ## Browser verification
 
 The optional browser checks use Playwright. Install it in your development environment, or set PLAYWRIGHT_PATH to your existing installation. Set CHROMIUM_PATH only when using an existing Chromium binary. TEST_BASE_URL selects the site under test; it defaults to the local server. Run `node tests/browser.cjs`. The checks use their own browser session and do not submit orders or payments.
+
+## FIELDWORK carry-set refresh
+
+The approved forest/clay visual now drives the live storefront. Three products have server-owned prices. `add-set` validates every line before writing the signed cart, preventing partial additions. Product detail pages and bag quantity controls use the same catalogue. The carry-set page uses independent product IDs; connecting a merchant store requires mapping the set to its real variants. No orders or payments are enabled without that connection.
